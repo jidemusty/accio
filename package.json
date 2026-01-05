@@ -1,0 +1,38 @@
+{
+  "name": "accio",
+  "version": "0.1.0",
+  "description": "The summoning charm for Postgres",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node examples/basic-usage.ts",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext ts --fix"
+  },
+  "keywords": [
+    "orm",
+    "postgres",
+    "typescript",
+    "database"
+  ],
+  "author": "Mustapha Adubiagbe",
+  "license": "MIT",
+  "packageManager": "pnpm@10.27.0",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/pg": "^8.16.0",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.7.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2"
+  }
+}
