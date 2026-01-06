@@ -2,14 +2,16 @@
   "name": "accio",
   "version": "0.1.0",
   "description": "The summoning charm for Postgres",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "ts-node examples/basic-usage.ts",
     "test": "jest",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext ts --fix"
+    "lint": "eslint src/",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "orm",
@@ -28,6 +30,8 @@
     "@typescript-eslint/parser": "^8.51.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^17.0.0",
     "prettier": "^3.7.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
