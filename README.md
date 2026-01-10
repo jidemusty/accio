@@ -20,11 +20,39 @@ Accio is a lightweight, type-safe TypeScript ORM for PostgreSQL, built from firs
 
 ## Installation
 
+1. Install the package
+
 ```bash
-npm install accio-orm pg reflect-metadata
+npm install accio-orm
 ```
 
-**Note:** `pg` (^8.0.0) and `reflect-metadata` (^0.2.0) are peer dependencies and must be installed separately.
+2. Install `pg` (postgres driver)
+
+```bash
+npm install pg
+```
+
+3. Install `reflect-metadata`
+
+```bash
+npm install reflect-metadata
+```
+
+### Important: Import reflect-metadata
+
+You **must** import `reflect-metadata` once at your application's entry point (before any Accio code runs):
+
+```typescript
+// src/index.ts or src/main.ts
+import 'reflect-metadata';
+
+// Now you can use Accio
+import { connect, Table, Column, PrimaryColumn } from 'accio-orm';
+```
+
+**Why?** TypeScript decorators require `reflect-metadata` to be loaded globally before any decorator-decorated classes are loaded. This enables Accio to read metadata from your `@Table` and `@Column` decorators.
+
+**Note:** `pg` (^8.0.0) and `reflect-metadata` (^0.2.2) are peer dependencies and must be installed separately.
 
 ### Prerequisites
 
@@ -46,20 +74,6 @@ Add these to your `tsconfig.json`:
   }
 }
 ```
-
-### Important: Import reflect-metadata
-
-You **must** import `reflect-metadata` once at your application's entry point (before any Accio code runs):
-
-```typescript
-// src/index.ts or src/main.ts
-import 'reflect-metadata';
-
-// Now you can use Accio
-import { connect, Table, Column, PrimaryColumn } from 'accio-orm';
-```
-
-**Why?** TypeScript decorators require `reflect-metadata` to be loaded globally before any decorator-decorated classes are loaded. This enables Accio to read metadata from your `@Table` and `@Column` decorators.
 
 ### 2. Define Your Entity
 
