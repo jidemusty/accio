@@ -3,6 +3,8 @@ import { MetadataStorage } from '@/metadata/MetadataStorage';
 import type { EntityConstructor, EntityMetadata } from '@/metadata/types';
 import { QueryBuilder } from '@/query/QueryBuilder';
 
+import { mapRowsToEntities, mapRowToEntity } from '../utils/entityMapper';
+
 export class Repository<T> {
   private entityClass: EntityConstructor;
   private connection: Connection;
@@ -16,27 +18,16 @@ export class Repository<T> {
     this.metadata = MetadataStorage.getEntityMetadata(entityClass);
   }
 
-  /**
-   * Map a database row to an entity instance
-   * @private
-   */
-  private mapRowToEntity(row: Record<string, unknown>): T {
-    const entity = new this.entityClass() as T;
-
-    this.metadata.columns.forEach((col) => {
-      const value = row[col.columnName];
-      (entity as Record<string, unknown>)[col.propertyKey] = value;
-    });
-
-    return entity;
-  }
-
   getConnection(): Connection {
     return this.connection;
   }
 
   getMetadata(): EntityMetadata {
     return this.metadata;
+  }
+
+  getEntityClass(): EntityConstructor {
+    return this.entityClass;
   }
 
   where(conditions: Partial<T>): QueryBuilder<T> {
@@ -61,7 +52,11 @@ export class Repository<T> {
       return null;
     }
 
-    return this.mapRowToEntity(result.rows[0] as Record<string, unknown>);
+    return mapRowToEntity<T>(
+      result.rows[0] as Record<string, unknown>,
+      this.entityClass,
+      this.metadata
+    );
   }
 
   /**
@@ -71,8 +66,10 @@ export class Repository<T> {
     const sql = `SELECT * FROM ${this.metadata.tableName}`;
     const result = await this.connection.query(sql);
 
-    return result.rows.map((row: Record<string, unknown>) =>
-      this.mapRowToEntity(row)
+    return mapRowsToEntities<T>(
+      result.rows as Record<string, unknown>[],
+      this.entityClass,
+      this.metadata
     );
   }
 
@@ -116,7 +113,11 @@ export class Repository<T> {
     `;
 
     const result = await this.connection.query(sql, values);
-    return this.mapRowToEntity(result.rows[0] as Record<string, unknown>);
+    return mapRowToEntity<T>(
+      result.rows[0] as Record<string, unknown>,
+      this.entityClass,
+      this.metadata
+    );
   }
 
   /**
@@ -163,7 +164,11 @@ export class Repository<T> {
       );
     }
 
-    return this.mapRowToEntity(result.rows[0] as Record<string, unknown>);
+    return mapRowToEntity<T>(
+      result.rows[0] as Record<string, unknown>,
+      this.entityClass,
+      this.metadata
+    );
   }
 
   /**

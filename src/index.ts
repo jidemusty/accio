@@ -10,6 +10,9 @@ export { Table } from './decorators/Table';
 // Repository
 export { Repository } from './repository/Repository';
 
+// Query Builder
+export { QueryBuilder } from './query/QueryBuilder';
+
 // Metadata
 export { MetadataStorage } from './metadata/MetadataStorage';
 export { EntityMetadata } from './metadata/types';
