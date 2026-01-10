@@ -92,6 +92,12 @@ export default [
 
   {
     // Ignore patterns
-    ignores: ['dist/', 'node_modules/', '*.config.js', 'coverage/']
+    ignores: [
+      'dist/',
+      'node_modules/',
+      '*.config.js',
+      '*.config.ts',
+      'coverage/'
+    ]
   }
 ];
