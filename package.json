@@ -1,7 +1,7 @@
 {
   "name": "accio",
   "version": "0.1.0",
-  "description": "The summoning charm for Postgres",
+  "description": "The summoning charm for Postgres - A lightweight TypeScript ORM",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,9 +16,16 @@
   "keywords": [
     "orm",
     "postgres",
+    "postgresql",
     "typescript",
-    "database"
+    "database",
+    "sql",
+    "data-mapper"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jidemusty/accio"
+  },
   "author": "Mustapha Adubiagbe",
   "license": "MIT",
   "packageManager": "pnpm@10.27.0",
@@ -38,10 +45,12 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.52.0"
-  },
-  "dependencies": {
+    "typescript-eslint": "^8.52.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2"
+  },
+  "peerDependencies": {
+    "pg": "^8.0.0",
+    "reflect-metadata": "^0.2.0"
   }
 }
