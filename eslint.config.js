@@ -3,16 +3,14 @@ import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import importPlugin from 'eslint-plugin-import'; // Add this
 
 export default [
-  // Base ESLint recommended rules
   eslint.configs.recommended,
 
-  // TypeScript ESLint recommended rules
   ...tseslint.configs.recommendedTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
 
-  // Prettier config (disables conflicting rules)
   prettier,
 
   {
@@ -20,13 +18,14 @@ export default [
 
     plugins: {
       '@typescript-eslint': tseslint.plugin,
-      'simple-import-sort': simpleImportSort
+      'simple-import-sort': simpleImportSort,
+      import: importPlugin
     },
 
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname
       },
       globals: {
@@ -35,8 +34,16 @@ export default [
       }
     },
 
+    settings: {
+      'import/resolver': {
+        typescript: {
+          alwaysTryTypes: true,
+          project: './tsconfig.eslint.json'
+        }
+      }
+    },
+
     rules: {
-      // No unused variables
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -46,7 +53,6 @@ export default [
         }
       ],
 
-      // Type imports (prefer type-only imports)
       '@typescript-eslint/consistent-type-imports': [
         'error',
         {
@@ -54,13 +60,10 @@ export default [
         }
       ],
 
-      // Ban usage of `any`
       '@typescript-eslint/no-explicit-any': 'warn',
 
-      // Floating promises
       '@typescript-eslint/no-floating-promises': 'error',
 
-      // Misused promises
       '@typescript-eslint/no-misused-promises': [
         'error',
         {

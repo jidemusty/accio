@@ -1,6 +1,8 @@
-import { Pool, QueryResult } from 'pg';
+import { Pool, type QueryResult } from 'pg';
+
+import type { EntityConstructor } from '../metadata/types';
+import { Repository } from '../repository/Repository';
 import type { ConnectionConfig } from './types';
-// import { Repository } from '../repository/Repository';
 
 export class Connection {
   private pool: Pool;
@@ -8,10 +10,10 @@ export class Connection {
   constructor(config: ConnectionConfig) {
     this.pool = new Pool({
       host: config.host,
-      port: config.port || 5432,
+      port: config.port ?? 5432,
       database: config.database,
       user: config.user,
-      password: config.password,
+      password: config.password
     });
   }
 
@@ -20,9 +22,9 @@ export class Connection {
    * @param entityClass
    * @returns
    */
-  // getRepository<T>(entityClass: new () => T): Repository<T> {
-  //   return new Repository<T>(entityClass, this);
-  // }
+  getRepository<T>(entityClass: new () => T): Repository<T> {
+    return new Repository<T>(entityClass as EntityConstructor, this);
+  }
 
   /**
    * Execute a raw SQL query
@@ -32,7 +34,9 @@ export class Connection {
       return await this.pool.query(sql, params);
     } catch (error) {
       // re-throw with context
-      throw new Error(`Query failed: ${sql}\nError: ${error}`);
+      throw new Error(
+        `Query failed: ${sql}\nError: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 

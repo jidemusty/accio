@@ -1,4 +1,4 @@
-import { connect } from '../src/connection/Connection';
+import { connect } from '@/connection/Connection';
 
 async function testConnection() {
   console.log('creating connection...');
@@ -7,7 +7,7 @@ async function testConnection() {
     host: 'localhost',
     database: 'accio_db',
     user: 'accio_db',
-    password: 'accio_db',
+    password: 'accio_db'
   });
 
   console.log('testing connection...');
@@ -18,7 +18,10 @@ async function testConnection() {
     console.log('✅ connection successfull');
 
     const result = await db.query('SELECT NOW()');
-    console.log('current time from database:', result.rows[0].now);
+    console.log(
+      'current time from database:',
+      (result.rows[0] as { now: string }).now
+    );
 
     await db.query(`
       CREATE TABLE IF NOT EXISTS test_table (
