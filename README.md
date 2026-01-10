@@ -4,6 +4,7 @@
 
 Accio is a lightweight, type-safe TypeScript ORM for PostgreSQL, built from first principles with a focus on simplicity and developer experience.
 
+[![npm version](https://badge.fury.io/js/accio-orm.svg)](https://www.npmjs.com/package/accio-orm)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
