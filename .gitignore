@@ -29,8 +29,3 @@ Thumbs.db
 
 *.tmp
 *.temp
-
-*.test.js
-*.test.ts
-*.spec.js
-*.spec.ts
