@@ -21,7 +21,7 @@ Accio is a lightweight, type-safe TypeScript ORM for PostgreSQL, built from firs
 ## Installation
 
 ```bash
-npm install accio pg reflect-metadata
+npm install accio-orm pg reflect-metadata
 ```
 
 **Note:** `pg` (^8.0.0) and `reflect-metadata` (^0.2.0) are peer dependencies and must be installed separately.
@@ -65,7 +65,7 @@ import { connect, Table, Column, PrimaryColumn } from 'accio-orm';
 
 ```typescript
 import 'reflect-metadata';
-import { Table, Column, PrimaryColumn } from 'accio';
+import { Table, Column, PrimaryColumn } from 'accio-orm';
 
 @Table('users')
 class User {
@@ -86,7 +86,7 @@ class User {
 ### 3. Connect to Database
 
 ```typescript
-import { connect } from 'accio';
+import { connect } from 'accio-orm';
 
 const db = connect({
   host: 'localhost',

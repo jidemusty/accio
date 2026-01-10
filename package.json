@@ -1,5 +1,5 @@
 {
-  "name": "accio",
+  "name": "accio-orm",
   "version": "0.1.0",
   "description": "The summoning charm for Postgres - A lightweight TypeScript ORM",
   "type": "module",
