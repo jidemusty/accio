@@ -78,8 +78,8 @@ export class MetadataStorage {
    * @param entityClass
    * @returns get the table name
    */
-  static getTableName(entityCLass: EntityConstructor): string {
-    return this.getEntityMetadata(entityCLass).tableName;
+  static getTableName(entityClass: EntityConstructor): string {
+    return this.getEntityMetadata(entityClass).tableName;
   }
 
   static getColumns(entityClass: EntityConstructor): ColumnMetadata[] {
