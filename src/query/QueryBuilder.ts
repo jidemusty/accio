@@ -181,7 +181,7 @@ export class QueryBuilder<T> {
             );
           }
 
-          // Hanfle different value types
+          // Handle different value types
           if (value === null) {
             whereClauses.push(`${column.columnName} IS NULL`);
           } else if (Array.isArray(value)) {
