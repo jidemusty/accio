@@ -1,4 +1,5 @@
 import type { Connection } from '@/connection/Connection';
+import { DatabaseError, QueryError } from '@/errors';
 import { MetadataStorage } from '@/metadata/MetadataStorage';
 import type { EntityConstructor, EntityMetadata } from '@/metadata/types';
 import { QueryBuilder } from '@/query/QueryBuilder';
@@ -41,7 +42,9 @@ export class Repository<T> {
 
   async findById(id: unknown): Promise<T | null> {
     if (!this.metadata.primaryColumn) {
-      throw new Error(`Entity ${this.entityClass.name} has no primary key`);
+      throw new QueryError(
+        `Entity ${this.entityClass.name} has no primary key defined`
+      );
     }
 
     const primaryKey = this.metadata.primaryColumn.columnName;
@@ -75,10 +78,12 @@ export class Repository<T> {
 
   save(entity: T): Promise<T> {
     if (!this.metadata.primaryColumn) {
-      throw new Error(`Entity ${this.entityClass.name} has no primary key`);
+      throw new QueryError(
+        `Entity ${this.entityClass.name} has no primary key defined`
+      );
     }
 
-    const primaryKey = this.metadata.primaryColumn.columnName;
+    const primaryKey = this.metadata.primaryColumn.propertyKey;
     const id = (entity as Record<string, unknown>)[primaryKey];
 
     if (id !== undefined && id !== null) {
@@ -95,7 +100,7 @@ export class Repository<T> {
     const columns = this.metadata.columns.filter((col) => !col.isPrimary);
 
     if (columns.length === 0) {
-      throw new Error(
+      throw new QueryError(
         `Entity ${this.entityClass.name} has no columns to insert (only primary key)`
       );
     }
@@ -125,12 +130,14 @@ export class Repository<T> {
    */
   async update(entity: T): Promise<T> {
     if (!this.metadata.primaryColumn) {
-      throw new Error(`Entity ${this.entityClass.name} has no primary key`);
+      throw new QueryError(
+        `Entity ${this.entityClass.name} has no primary key defined`
+      );
     }
 
     const columns = this.metadata.columns.filter((col) => !col.isPrimary);
     if (columns.length === 0) {
-      throw new Error(
+      throw new QueryError(
         `Entity ${this.entityClass.name} has no columns to update (only primary key)`
       );
     }
@@ -159,8 +166,10 @@ export class Repository<T> {
     const result = await this.connection.query(sql, [...values, primaryValue]);
 
     if (result.rows.length === 0) {
-      throw new Error(
-        `Update failed: Entity with ${primaryKey} = ${String(primaryValue)} not found`
+      throw new DatabaseError(
+        `Update failed: Entity with ${primaryKey} = ${String(primaryValue)} not found`,
+        undefined,
+        `No rows affected by UPDATE operation`
       );
     }
 
@@ -176,7 +185,9 @@ export class Repository<T> {
    */
   async delete(entity: T): Promise<void> {
     if (!this.metadata.primaryColumn) {
-      throw new Error(`Entity ${this.entityClass.name} has no primary key`);
+      throw new QueryError(
+        `Entity ${this.entityClass.name} has no primary key defined`
+      );
     }
 
     const primaryKey = this.metadata.primaryColumn.columnName;
@@ -185,7 +196,7 @@ export class Repository<T> {
     ];
 
     if (primaryValue === undefined || primaryValue === null) {
-      throw new Error(
+      throw new QueryError(
         `Cannot delete entity: primary key ${primaryKey} is ${primaryValue}`
       );
     }
@@ -199,7 +210,9 @@ export class Repository<T> {
    */
   async deleteById(id: unknown): Promise<void> {
     if (!this.metadata.primaryColumn) {
-      throw new Error(`Entity ${this.entityClass.name} has no primary key`);
+      throw new QueryError(
+        `Entity ${this.entityClass.name} has no primary key defined`
+      );
     }
 
     const primaryKey = this.metadata.primaryColumn.columnName;
@@ -224,7 +237,9 @@ export class Repository<T> {
    */
   async exists(id: unknown): Promise<boolean> {
     if (!this.metadata.primaryColumn) {
-      throw new Error(`Entity ${this.entityClass.name} has no primary key`);
+      throw new QueryError(
+        `Entity ${this.entityClass.name} has no primary key defined`
+      );
     }
 
     const primaryKey = this.metadata.primaryColumn.columnName;

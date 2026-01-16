@@ -1,3 +1,5 @@
+import { identifierValidator, QueryValidator } from '@/validation';
+
 import type { Connection } from '../connection/Connection';
 import type { EntityMetadata } from '../metadata/types';
 import type { Repository } from '../repository/Repository';
@@ -29,24 +31,6 @@ export class QueryBuilder<T> {
   }
 
   /**
-   * Map a database row to an entity instance
-   * @private
-   */
-  private mapRowToEntity(row: Record<string, unknown>): T {
-    // Get the entity class from the repository
-    const entityClass = this.repository.getEntityClass();
-    const entity = new entityClass() as T;
-
-    // Map each column from the database row to the entity property
-    this.metadata.columns.forEach((col) => {
-      const value = row[col.columnName];
-      (entity as Record<string, unknown>)[col.propertyKey] = value;
-    });
-
-    return entity;
-  }
-
-  /**
    * Add WHERE conditions (can be chained multiple times)
    * Multiple calls to where() are combined with AND
    */
@@ -59,10 +43,7 @@ export class QueryBuilder<T> {
    * Set the maximum number of results to return
    */
   limit(value: number): this {
-    if (value < 0) {
-      throw new Error('Limit must be a positive number');
-    }
-
+    QueryValidator.validateLimit(value);
     this.limitValue = value;
     return this;
   }
@@ -71,9 +52,7 @@ export class QueryBuilder<T> {
    * Set the number of results to skip
    */
   offset(value: number): this {
-    if (value < 0) {
-      throw new Error('Offset must be a positive number');
-    }
+    QueryValidator.validateOffset(value);
     this.offsetValue = value;
     return this;
   }
@@ -82,19 +61,21 @@ export class QueryBuilder<T> {
    * Order results by a column
    */
   orderBy(column: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
-    // Validate that the column exists
+    // validate direction
+    QueryValidator.validateOrderDirection(direction);
+
+    // validate that property exists in metadata
+    identifierValidator.validatePropertyExists(
+      column,
+      this.metadata,
+      'ORDER BY'
+    );
+
     const columnMeta = this.metadata.columns.find(
       (col) => col.propertyKey === column
     );
 
-    if (!columnMeta) {
-      throw new Error(
-        `Column '${column}' does not exist on entity. ` +
-          `Available columns: ${this.metadata.columns.map((c) => c.propertyKey).join(', ')}`
-      );
-    }
-
-    this.orderByColumn = columnMeta.columnName;
+    this.orderByColumn = columnMeta!.columnName;
     this.orderDirection = direction;
     return this;
   }
@@ -169,21 +150,21 @@ export class QueryBuilder<T> {
 
       this.conditions.forEach((condition) => {
         Object.entries(condition).forEach(([key, value]) => {
+          // validate that the property exists in metadata
+          identifierValidator.validatePropertyExists(
+            key,
+            this.metadata,
+            'WHERE clause'
+          );
+
           // find column metadata for this property
           const column = this.metadata.columns.find(
             (col) => col.propertyKey === key
           );
 
-          if (!column) {
-            throw new Error(
-              `Property '${key}' does not exist on entity ${this.metadata.tableName}. ` +
-                `Available properties: ${this.metadata.columns.map((c) => c.propertyKey).join(', ')}`
-            );
-          }
-
           // Handle different value types
           if (value === null) {
-            whereClauses.push(`${column.columnName} IS NULL`);
+            whereClauses.push(`${column!.columnName} IS NULL`);
           } else if (Array.isArray(value)) {
             // IN clause: WHERE column IN ($1, $2, $3)
             if (value.length === 0) {
@@ -196,12 +177,12 @@ export class QueryBuilder<T> {
                 })
                 .join(', ');
 
-              whereClauses.push(`${column.columnName} IN (${placeholders})`);
+              whereClauses.push(`${column!.columnName} IN (${placeholders})`);
             }
           } else {
             // regular equality: WHERE column = $1
             params.push(value);
-            whereClauses.push(`${column.columnName} = $${params.length}`);
+            whereClauses.push(`${column!.columnName} = $${params.length}`);
           }
         });
       });

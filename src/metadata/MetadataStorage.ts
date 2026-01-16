@@ -1,5 +1,6 @@
 import { type ColumnMetadata, getColumns } from '@/decorators/Column';
 import { getTableName } from '@/decorators/Table';
+import { ValidationError } from '@/errors';
 
 import type { EntityConstructor, EntityMetadata } from './types';
 
@@ -19,34 +20,46 @@ export class MetadataStorage {
 
     const tableName = getTableName(entityClass);
     if (!tableName) {
-      throw new Error(
+      throw new ValidationError(
         `Entity ${entityClass.name} is missing @Table decorator.
         Did you forget to add @Table('table_name') to the class?
-        `
+        `,
+        'decorator',
+        '@Table',
+        { entityClass: entityClass.name }
       );
     }
 
     const columns = getColumns(entityClass);
     if (columns.length === 0) {
-      throw new Error(
+      throw new ValidationError(
         `Entity ${entityClass.name} has no columns defined.
-        Did you forget to add @Column() or @PrimaryColumn() decorators?`
+        Did you forget to add @Column() or @PrimaryColumn() decorators?`,
+        'decorator',
+        '@Column',
+        { entityClass: entityClass.name }
       );
     }
 
     const primaryColumns = columns.filter((col) => col.isPrimary);
     if (primaryColumns.length === 0) {
-      throw new Error(
+      throw new ValidationError(
         `Entity ${entityClass.name} has no primary key defined.
-        Add @PrimaryColumn() to one of your properties.`
+        Add @PrimaryColumn() to one of your properties.`,
+        'decorator',
+        '@PrimaryColumn',
+        { entityClass: entityClass.name }
       );
     }
 
     if (primaryColumns.length > 1) {
-      throw new Error(
+      throw new ValidationError(
         `Entity ${entityClass.name} has multiple primary keys:
         ${primaryColumns.map((c) => c.propertyKey).join(', ')}.
-        Only one primary key is supported.`
+        Only one primary key is supported.`,
+        'primarykey',
+        primaryColumns.map((c) => c.propertyKey),
+        { entityClass: entityClass.name }
       );
     }
 
@@ -90,7 +103,12 @@ export class MetadataStorage {
     const metadata = this.getEntityMetadata(entityClass);
 
     if (!metadata.primaryColumn) {
-      throw new Error(`Entity ${entityClass.name} has no primary key`);
+      throw new ValidationError(
+        `Entity ${entityClass.name} has no primary key ddefined`,
+        'primaryKey',
+        undefined,
+        { entityClass: entityClass.name }
+      );
     }
 
     return metadata.primaryColumn;

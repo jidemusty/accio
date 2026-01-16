@@ -1,17 +1,19 @@
 import 'reflect-metadata';
 
+import type { PostgresType } from '@/types';
+
 export const COLUMNS_KEY = Symbol('table:columns');
 
 export interface ColumnOptions {
   name?: string;
-  type?: string;
+  type?: PostgresType | string;
   nullable?: boolean;
 }
 
 export interface ColumnMetadata {
   propertyKey: string;
   columnName: string;
-  type?: string;
+  type?: PostgresType | string;
   isNullable?: boolean;
   isPrimary: boolean;
 }
