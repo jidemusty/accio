@@ -10,6 +10,7 @@
     "src/**/*.jsx",
     "tests/**/*.ts",
     "tests/**/*.tsx",
+    "examples/**/*.ts",
     "vitest.config.ts"
   ],
   "exclude": []

@@ -1,9 +1,13 @@
 // Connection
 export { connect, Connection } from './connection/Connection';
-export { ConnectionConfig } from './connection/types';
+export type { ConnectionConfig } from './connection/types';
 
 // Decorators
-export { Column, ColumnMetadata, ColumnOptions } from './decorators/Column';
+export {
+  Column,
+  type ColumnMetadata,
+  type ColumnOptions
+} from './decorators/Column';
 export { PrimaryColumn } from './decorators/PrimaryColumn';
 export { Table } from './decorators/Table';
 
@@ -15,4 +19,23 @@ export { QueryBuilder } from './query/QueryBuilder';
 
 // Metadata
 export { MetadataStorage } from './metadata/MetadataStorage';
-export { EntityMetadata } from './metadata/types';
+export type { EntityMetadata } from './metadata/types';
+
+// Errors
+export {
+  AccioError,
+  ConnectionError,
+  DatabaseError,
+  QueryError,
+  ValidationError
+} from './errors';
+
+// Logger
+export { Logger, type LoggerConfig, LogLevel } from './logger';
+
+// Types
+export {
+  getPostgresTypeForTS,
+  isValidPostgresType,
+  PostgresType
+} from './types';

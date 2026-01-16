@@ -10,7 +10,15 @@ import { type ColumnMetadata, COLUMNS_KEY } from './Column';
  * id: number
  */
 export function PrimaryColumn() {
-  return function (target: object, propertyKey: string | symbol): void {
+  return function (
+    target: object | undefined,
+    propertyKey: string | symbol
+  ): void {
+    if (!target) {
+      throw new Error(
+        'PrimaryColumn decorator must be used on an instance property'
+      );
+    }
     const constructor = target.constructor;
 
     const columns: ColumnMetadata[] =

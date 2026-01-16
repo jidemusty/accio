@@ -1,5 +1,5 @@
-import { LogLevel } from './LogLevels';
-import { LogLevelNames } from './LogLevels';
+import { LogLevel } from './LogLevel';
+import { LogLevelNames } from './LogLevel';
 
 /**
  * Structured log entity

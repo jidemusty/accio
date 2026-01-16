@@ -2,7 +2,6 @@
   "name": "accio-orm",
   "version": "0.1.0",
   "description": "The summoning charm for Postgres - A lightweight TypeScript ORM",
-  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -13,6 +12,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "ts-node examples/basic-usage.ts",
+    "dev-test": "npx tsx src/examples/test-querybuilder.ts",
+    "dev-test-1": "npx ts-node tsconfig-paths/register examples/test-decorators",
     "lint": "eslint src/",
     "lint:fix": "eslint . --fix",
     "type-check": "tsc --noEmit",
